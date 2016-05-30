@@ -1,0 +1,60 @@
+module sop_corba{
+
+	struct datosUsuarios{
+			string nombre;
+			string apellido;
+			string login;
+			string contrasena;
+	};
+	typedef datosUsuarios dtUsu;
+	
+	struct datosCanciones{
+			string tituloCancion;
+			string album;
+			string nombresCantantes;
+			string genero;
+			string tiempoDuracion;
+			string tamanoArchivo;
+			string tipoExtension;
+			string codigoCancion;
+			string cantidadCopias;
+			string topeMinimo;
+			string valorCopia;
+	};
+	typedef datosCanciones dtCanc;
+
+	interface ServidorInt{
+		
+		boolean ingresoAlSistema(in string login,in string clave);
+		boolean registrarCanciones(in dtCanc valores);
+		void modificarDatosCancion(in string codigoCancion);
+		void consultarCancion(in string codigoCancion);
+		void desactivarCancion(in string codigoCancion);
+		void listarCanciones(out dtCanc valores);
+		void modificarUsuarioA(in string login);
+		boolean eliminarUsuario(in string login);
+		void listarUsuarios(out dtUsu valores);
+		void recibirMensaje(in string usuario,in string mensaje);
+	};
+	
+	interface ClienteInt{
+
+		const unsigned short SIZE=10;
+        typedef long arrayCanciones[SIZE];
+
+		struct listaReproducion{
+			string nombre;
+			arrayCanciones res;
+		};
+		typedef listaReproducion dtListaCanc;
+	
+			boolean registarUsuario(in dtUsu valores);
+			void modificarUsuarioU(in string login);
+			void consultarCancionesTitulo(in string titulo,out dtCanc valores);
+			void consultarCancionesCantante(in string cantante,out dtCanc valores);
+			boolean crearListasReproduccion(in string login,in string nombrelista,in dtCanc valores);
+			void mostrarListasReproduccion(out dtListaCanc valores);
+			boolean borrarCancionLista(in string nombreCancion, in string nombreLista);
+			void enviarMensaje(in string usuario,in string mensaje);
+			};
+};
