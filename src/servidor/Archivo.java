@@ -1,141 +1,76 @@
 package servidor;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.*;
-import static java.nio.file.StandardCopyOption.*;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Vector;
-
 
 public class Archivo {
 
-    private Path f;
-    private Path E;
+    private File f;
 
     public Archivo() {
     }
 
-    public void crear_archivo(String nombre) {
-        f = Paths.get(nombre + ".txt");
-        try {
-            if (Files.exists(f)) {
-                System.out.println("Archivo ya existe");
-            } else {
-                Path archivo = Files.createFile(f);
+    public boolean existe(String a) {
+        f = new File(a);
+        return f.exists();
+    }
+
+    public Archivo(String archivo) {
+        f = new File(archivo);
+        if (!f.exists()) {
+            try (FileWriter fw = new FileWriter(f, true)) {
+                fw.write("");
+                fw.close();
+            } catch (Exception e) {
             }
-        } catch (Exception e) {
-            System.err.println("Error Archivo");
-        }
-    }
-    public void modificar_Archivo(String nombre)
-    {
-//        Path arc = Paths.get(nombre + ".txt");
-//        UsuarioInt ob = null;
-//        try {
-//            if (!Files.exists(arc)) {
-//               System.out.println("El usuario no existe");
-//            } else {
-//                Files.delete(arc);
-//                ingresar_datos(ob);
-//            }
-//        } catch (Exception e) {
-//            System.err.println("Error Archivo");
-//        }
-    }
-
-//    public void ingresar_datos(UsuarioInt ob) {
-//        try (BufferedWriter escribe = Files.newBufferedWriter(f, Charset.defaultCharset())) {
-//            escribe.append(ob.get_Apellido() + "," + ob.get_Nombres() + ","
-//                    + "," + ob.get_Identificacion() + ob.get_Edad() + "," + "," + ob.get_clave() );//+ "," + ob.get_puntuacion()
-//            escribe.newLine();
-//            escribe.flush();
-//        } catch (IOException exception) {
-//            System.out.println("Error escribiendo al archivo");
-//        }
-//    }
-
-    public void guardar_archivo(String linea, String nombre) {
-        f = Paths.get(nombre + ".txt");
-        try (BufferedWriter escribe = Files.newBufferedWriter(f, Charset.defaultCharset())) {
-            escribe.append(linea);
-            escribe.newLine();
-            escribe.flush();
-        } catch (IOException exception) {
-            System.out.println("Error escribiendo al archivo");
         }
     }
 
-    public void guardar_archivo2(String linea, String nombre) {
-        f = Paths.get(nombre + ".txt");
-        try (BufferedWriter escribe = Files.newBufferedWriter(f, Charset.defaultCharset())) {
-
-            escribe.append(linea);
-            escribe.newLine();
-            escribe.flush();
-
-        } catch (IOException exception) {
-            System.out.println("Error escribiendo al archivo");
+    public void ingresarLinea(String line) throws IOException {
+        try (FileWriter fw = new FileWriter(f, true)) {
+            fw.write(line + "\r\n");
+            fw.close();
         }
     }
 
-    public void copia(String nombre) {
-        Path fuente = Paths.get(nombre + ".txt");
-        Path destino = Paths.get("huella\\huella.txt");
-        try {
-            Files.delete(destino);
-            Files.copy(fuente, destino);
-            System.out.println("Copia realizada");
-        } catch (IOException e) {
-            System.out.println("Error copiando Archivos");
-            e.printStackTrace();
+    public int CantidadLineas() throws IOException {
+        int x = 0;
+        FileReader fr = new FileReader(f);
+        try (BufferedReader br = new BufferedReader(fr)) {
+            String p = null;
+            while ((p = br.readLine()) != null) {
+                x++;
+            }
         }
+        return x;
     }
 
-    public String[] CargarArchivo(String nombre) {
-        Vector array = new Vector();
+    // devuelve todas las lineas del archivo en un vector de string
+    public String[] getArray() throws IOException {
         int i = 0;
-        f = Paths.get("juego1://"+nombre + ".txt");
-        try (BufferedReader lector = Files.newBufferedReader(f, Charset.defaultCharset())) {
-            String linea = "";
-            while ((linea = lector.readLine()) != null) {
-                System.out.println(linea + ",");
-                array.add(linea);
-            }
-            String[] a = new String[array.size()];
-            for (i = 0; i < array.size(); i++) {
-                a[i] = array.get(i).toString();
-            }
-            return a;
-        } catch (IOException exception) {
-            System.out.println("Error leyendo el archivo");
+        String[] x = new String[CantidadLineas()];
+        String p;
+        FileReader fr = new FileReader(f);
+        BufferedReader br = new BufferedReader(fr);
+        while ((p = br.readLine()) != null) {
+            x[i] = p;
+            i++;
         }
-        return null;
+        return x;
     }
 
-    public String CargarAdmin() {
-        f = Paths.get("admin.txt");
-        try (BufferedReader lector = Files.newBufferedReader(f, Charset.defaultCharset())) {
-            String linea = "";
-            linea = lector.readLine();
-            System.out.println(linea);
-            return linea;
-        } catch (IOException exception) {
-            System.out.println("Error leyendo el archivo");
+    public void borrarLineas() throws IOException {
+        try (FileWriter fw = new FileWriter(f, false)) {
+            fw.write("");
+            fw.close();
         }
-        return null;
     }
 
-    public boolean eliminar_archivo(String cadena) {
-        File fichero = new File(cadena);
-        if (fichero.delete()) {
-            return true;
-        } else {
-            return false;
-        }
+    public boolean borrar() {
+        return f.delete();
     }
+
 }

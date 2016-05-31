@@ -5,6 +5,7 @@
  */
 package servidor;
 
+import java.io.IOException;
 import sop_corba.ServidorIntPOA;
 import sop_corba.datosCanciones;
 import sop_corba.datosCancionesHolder;
@@ -18,23 +19,42 @@ public class ServidorImpl extends ServidorIntPOA {
 
     @Override
     public boolean ingresoAlSistema(String login, String clave) {
-        System.out.println("Ingresar...");
+        
+        System.out.println("Ingresar...");        
         try {
-            Archivo obAr = new Archivo();
-            String linea = obAr.CargarAdmin();
-            System.out.println("linea :" + linea);
-            String[] aux = linea.split(";");
-            if (aux[0].compareTo(login) == 0 && aux[1].compareTo(clave) == 0) {
-                return true;
+            Archivo archivo = new Archivo("admin.txt");
+            if (archivo.CantidadLineas() != 0) {
+                String[] lineas = archivo.getArray();
+                for (String linea : lineas) {
+                    String[] aux = linea.split(";");
+                    if (aux[0].compareTo(login) == 0 && aux[1].compareTo(clave) == 0) {
+                       
+                        return true;
+                    }
+                }
             }
-        } catch (Exception ex) {
-        }
+        } catch (IOException ex) {
+        }       
         return false;
     }
 
     @Override
     public boolean registrarCanciones(datosCanciones valores) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+       System.out.println("Registrar Canciones...");
+        try {
+            Archivo archivo = new Archivo("servidor/Canciones/cancion_" + valores.codigoCancion.toLowerCase() + ".txt");
+            if (archivo.CantidadLineas() == 0) {
+                archivo.ingresarLinea(valores.codigoCancion + ";" + valores.tituloCancion + ";"
+                        + valores.album + ";" + valores.tiempoDuracion+ ";"
+                        + valores.nombresCantantes  + ";" + valores.genero + ";"
+                        + valores.tamanoArchivo + ";" + valores.tipoExtension + ";"
+                        + valores.cantidadCopias + ";" + valores.topeMinimo + ";"
+                        + valores.valorCopia + ";" + "1");
+                return true;
+            }
+        } catch (IOException ex) {
+        }
+        return false;
     }
 
     @Override
@@ -55,6 +75,12 @@ public class ServidorImpl extends ServidorIntPOA {
     @Override
     public void listarCanciones(datosCancionesHolder valores) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean consultarUsuario(String login) {
+        return true;
+        
     }
 
     @Override

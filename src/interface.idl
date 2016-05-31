@@ -31,6 +31,7 @@ module sop_corba{
 		void consultarCancion(in string codigoCancion);
 		void desactivarCancion(in string codigoCancion);
 		void listarCanciones(out dtCanc valores);
+		boolean consultarUsuario(in string login);
 		void modificarUsuarioA(in string login);
 		boolean eliminarUsuario(in string login);
 		void listarUsuarios(out dtUsu valores);

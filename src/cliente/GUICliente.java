@@ -5,14 +5,17 @@
  */
 package cliente;
 
-import static cliente.Cliente.ref;
+
 import javax.swing.JOptionPane;
 import org.omg.CORBA.ORB;
 import org.omg.CosNaming.NamingContextExt;
 import org.omg.CosNaming.NamingContextExtHelper;
 import org.omg.PortableServer.POA;
 import org.omg.PortableServer.POAHelper;
+import sop_corba.ClienteInt;
+import sop_corba.ServidorInt;
 import sop_corba.ServidorIntHelper;
+
 
 /**
  *
@@ -23,6 +26,10 @@ public class GUICliente extends javax.swing.JFrame {
     /**
      * Creates new form GUICliente
      */
+    
+    ServidorInt ref;
+    ClienteInt objcllbck;
+    
     public GUICliente() {
         initComponents();
     }
@@ -138,7 +145,7 @@ public class GUICliente extends javax.swing.JFrame {
     private void btnAceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAceptarActionPerformed
         
          try{
-                
+              
                 String[] vector = new String[4];
                 vector[0] = "–ORBInitialHost";
                 vector[1] = "localhost";
@@ -158,23 +165,17 @@ public class GUICliente extends javax.swing.JFrame {
 
         System.out.println("Obtenido el manejador sobre el servidor de objetos: " +ref);
         
-        
-        
-       
         char[] contrasena =txtclave.getPassword();
         String user = txtLogin.getText();
         String c=new String(contrasena);
         if (!c.isEmpty() && !user.isEmpty()) {
             if (ref.ingresoAlSistema(user, c)) {
                 
-                new Menu_Administrador(this.admin,this).setVisible(true);
+                new MenuAdministrador().setVisible(true);
                 this.dispose();
             }
         }
        
-        
-        
-        
 	} catch (Exception e) {
           System.out.println("ERROR : " + e) ;
 	  e.printStackTrace(System.out);
